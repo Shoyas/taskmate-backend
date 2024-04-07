@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id            Int            @id @default(autoincrement())
+  userName      String
+  email         String         @unique
+  password      String
+  role          UserRoleEnum?  @default(student)
+  createdTasks  Task[]         @relation("TaskCreator") // Inverse relation of tasks created by the user
+  assignedTasks Task[]         @relation("TaskAssignedTo") // Added relation to represent tasks assigned to the user
+  CompleteTasks CompleteTask[]
+
+  @@map("users")
+}
+
+
+enum UserRoleEnum {
+  teacher
+  student
+}
+
+
+model Task {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String
+  creator     User    @relation(name: "TaskCreator", fields: [creatorId], references: [id])
+  creatorId   Int
+  assignedTo  User?   @relation(name: "TaskAssignedTo", fields: [assignUser], references: [id]) // Added relation to represent the user to whom the task is assigned
+  assignUser  Int
+  CompleteTasks CompleteTask[]
+
+  @@map("tasks")
+}
+
+
+model CompleteTask {
+  id              Int   @id @default(autoincrement())
+  task            Task? @relation(fields: [completedTaskId], references: [id])
+  completedTaskId Int
+
+  complete Boolean @default(false)
+  user     User?   @relation(fields: [userId], references: [id])
+  userId   Int?
+
+  @@map("completeTasks") 
+}
