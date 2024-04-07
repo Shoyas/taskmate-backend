@@ -1,6 +1,7 @@
 const express = require("express");
 const { PrismaClient } = require("@prisma/client");
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
+const cors = require("cors");
 require("dotenv").config();
 
 const prisma = new PrismaClient();
@@ -8,6 +9,7 @@ const app = express();
 const port = process.env.PORT || 5050;
 
 app.use(express.json());
+app.use(cors());
 
 //! Users API
 // Create a new user
@@ -16,7 +18,7 @@ app.post("/users/create", async (req, res) => {
   try {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 12);
-    
+
     // Create the new user with the hashed password
     const newUser = await prisma.user.create({
       data: {
@@ -26,7 +28,7 @@ app.post("/users/create", async (req, res) => {
         role,
       },
     });
-    
+
     res.json(newUser);
   } catch (error) {
     console.error(error);
@@ -46,18 +48,18 @@ app.get("/users", async (req, res) => {
 });
 
 // Get single user
-app.get("/users/:id", async(req, res) => {
+app.get("/users/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const user = await prisma.user.findUnique({
-      where:{ id: parseInt(id) }
-    })
-    res.json(user)
+      where: { id: parseInt(id) },
+    });
+    res.json(user);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to fetch single user" });
   }
-})
+});
 
 // Update a user
 app.patch("/users/:id", async (req, res) => {
@@ -232,7 +234,7 @@ app.delete("/completeTasks/:id", async (req, res) => {
 });
 
 //! Login System
-app.post('/login', async (req, res) => {
+app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -243,19 +245,21 @@ app.post('/login', async (req, res) => {
 
     // If user not found or password doesn't match, return error
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      return res.status(401).json({ error: "Invalid email or password" });
     }
 
     // If credentials are valid, return user data
-    res.json({
+    const loggedInUser = {
       id: user.id,
       userName: user.userName,
       email: user.email,
       role: user.role,
-    });
+    };
+    res.json(loggedInUser);
+    console.log("Login Successfully", loggedInUser);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
