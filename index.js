@@ -195,7 +195,12 @@ app.post("/completeTasks/create", async (req, res) => {
 // Get all complete tasks
 app.get("/completeTasks", async (req, res) => {
   try {
-    const completeTasks = await prisma.completeTask.findMany();
+    const completeTasks = await prisma.completeTask.findMany({
+      include: {
+        task: true,
+        user: true,
+      },
+    });
     res.json(completeTasks);
   } catch (error) {
     console.error(error);
