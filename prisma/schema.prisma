@@ -7,7 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
   id            Int            @id @default(autoincrement())
   userName      String
@@ -21,26 +20,23 @@ model User {
   @@map("users")
 }
 
-
 enum UserRoleEnum {
   teacher
   student
 }
 
-
 model Task {
-  id          Int     @id @default(autoincrement())
-  title       String
-  description String
-  creator     User    @relation(name: "TaskCreator", fields: [creatorId], references: [id])
-  creatorId   Int
-  assignedTo  User?   @relation(name: "TaskAssignedTo", fields: [assignUser], references: [id]) // Added relation to represent the user to whom the task is assigned
-  assignUser  Int
+  id            Int            @id @default(autoincrement())
+  title         String
+  description   String
+  creator       User           @relation(name: "TaskCreator", fields: [creatorId], references: [id])
+  creatorId     Int
+  assignedTo    User?          @relation(name: "TaskAssignedTo", fields: [assignUser], references: [id]) // Added relation to represent the user to whom the task is assigned
+  assignUser    Int
   CompleteTasks CompleteTask[]
 
   @@map("tasks")
 }
-
 
 model CompleteTask {
   id              Int   @id @default(autoincrement())
@@ -51,5 +47,14 @@ model CompleteTask {
   user     User?   @relation(fields: [userId], references: [id])
   userId   Int?
 
-  @@map("completeTasks") 
+  @@map("completeTasks")
+}
+
+model notification {
+  id        Int      @id @default(autoincrement())
+  title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("notifications")
 }
