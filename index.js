@@ -238,6 +238,33 @@ app.delete("/completeTasks/:id", async (req, res) => {
   }
 });
 
+// Create a new notification
+app.post("/notifications/create", async (req, res) => {
+  const { title } = req.body;
+  try {
+    const newNotification = await prisma.notification.create({
+      data: {
+        title: title,
+      },
+    });
+    res.json(newNotification);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to create notification" });
+  }
+});
+
+// Get all notifications
+app.get("/notifications", async(req, res) => {
+  try {
+    const notifications = await prisma.notification.findMany();
+    res.json(notifications);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({error: "Failed to get notifications"});
+  }
+})
+
 //! Login System
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;

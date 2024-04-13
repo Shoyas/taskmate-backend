@@ -43,9 +43,9 @@ model CompleteTask {
   task            Task? @relation(fields: [completedTaskId], references: [id])
   completedTaskId Int
 
-  complete Boolean @default(false)
-  user     User?   @relation(fields: [userId], references: [id])
-  userId   Int?
+  complete  Boolean  @default(false)
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    Int?
 
   @@map("completeTasks")
 }
