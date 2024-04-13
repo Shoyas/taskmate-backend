@@ -241,6 +241,7 @@ app.delete("/completeTasks/:id", async (req, res) => {
 // Create a new notification
 app.post("/notifications/create", async (req, res) => {
   const { title } = req.body;
+  console.log('Notification title: ', title);
   try {
     const newNotification = await prisma.notification.create({
       data: {
