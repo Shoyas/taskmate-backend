@@ -35,6 +35,7 @@ model Task {
   assignUser    Int
   CompleteTasks CompleteTask[]
 
+
   @@map("tasks")
 }
 
@@ -58,3 +59,5 @@ model notification {
 
   @@map("notification")
 }
+
+

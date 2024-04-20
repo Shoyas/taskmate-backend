@@ -113,6 +113,7 @@ app.post("/tasks/create", async (req, res) => {
       include: {
         creator: true, // Include the creator information
         assignedTo: true, // Include the assigned user information
+        
       },
     });
     res.json(newTask);
@@ -129,6 +130,7 @@ app.get("/tasks", async (req, res) => {
       include: {
         creator: true,
         assignedTo: true,
+        CompleteTasks: true
       },
     });
     res.json(tasks);
