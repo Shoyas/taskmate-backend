@@ -142,17 +142,12 @@ app.get("/tasks", async (req, res) => {
 // Update a task
 app.patch("/tasks/:id", async (req, res) => {
   const { id } = req.params;
-  const { title, description, creatorId, assignUser, completeTaskStatus } =
-    req.body;
+  const { completeTaskStatus } = req.body;
 
   try {
     const updatedTask = await prisma.task.update({
       where: { id: parseInt(id) },
       data: {
-        title,
-        description,
-        creatorId: parseInt(creatorId),
-        assignUser: assignUser ? parseInt(assignUser) : undefined,
         completeTaskStatus,
       },
     });
