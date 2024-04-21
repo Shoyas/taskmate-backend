@@ -26,15 +26,16 @@ enum UserRoleEnum {
 }
 
 model Task {
-  id            Int            @id @default(autoincrement())
-  title         String
-  description   String
-  creator       User           @relation(name: "TaskCreator", fields: [creatorId], references: [id])
-  creatorId     Int
-  assignedTo    User?          @relation(name: "TaskAssignedTo", fields: [assignUser], references: [id]) // Added relation to represent the user to whom the task is assigned
-  assignUser    Int
-  CompleteTasks CompleteTask[]
+  id          Int    @id @default(autoincrement())
+  title       String
+  description String
+  creator     User   @relation(name: "TaskCreator", fields: [creatorId], references: [id])
+  creatorId   Int
+  assignedTo  User?  @relation(name: "TaskAssignedTo", fields: [assignUser], references: [id]) // Added relation to represent the user to whom the task is assigned
+  assignUser  Int
+  CompleteTasks      CompleteTask[]
 
+  completeTaskStatus Boolean        @default(false)
 
   @@map("tasks")
 }
@@ -44,20 +45,9 @@ model CompleteTask {
   task            Task? @relation(fields: [completedTaskId], references: [id])
   completedTaskId Int
 
-  complete  Boolean  @default(false)
-  user      User?    @relation(fields: [userId], references: [id])
-  userId    Int?
+  complete Boolean @default(false)
+  user     User?   @relation(fields: [userId], references: [id])
+  userId   Int?
 
   @@map("completeTasks")
 }
-
-model notification {
-  id        Int      @id @default(autoincrement())
-  title     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("notification")
-}
-
-

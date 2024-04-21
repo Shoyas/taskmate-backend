@@ -113,7 +113,6 @@ app.post("/tasks/create", async (req, res) => {
       include: {
         creator: true, // Include the creator information
         assignedTo: true, // Include the assigned user information
-        
       },
     });
     res.json(newTask);
@@ -130,7 +129,7 @@ app.get("/tasks", async (req, res) => {
       include: {
         creator: true,
         assignedTo: true,
-        CompleteTasks: true
+        CompleteTasks: true,
       },
     });
     res.json(tasks);
@@ -143,7 +142,9 @@ app.get("/tasks", async (req, res) => {
 // Update a task
 app.patch("/tasks/:id", async (req, res) => {
   const { id } = req.params;
-  const { title, description, creatorId, assignUser } = req.body;
+  const { title, description, creatorId, assignUser, completeTaskStatus } =
+    req.body;
+
   try {
     const updatedTask = await prisma.task.update({
       where: { id: parseInt(id) },
@@ -152,6 +153,7 @@ app.patch("/tasks/:id", async (req, res) => {
         description,
         creatorId: parseInt(creatorId),
         assignUser: assignUser ? parseInt(assignUser) : undefined,
+        completeTaskStatus,
       },
     });
     res.json(updatedTask);
@@ -239,34 +241,6 @@ app.delete("/completeTasks/:id", async (req, res) => {
     res.status(500).json({ error: "Failed to delete complete task" });
   }
 });
-
-// Create a new notification
-app.post("/notifications/create", async (req, res) => {
-  const { title } = req.body;
-  console.log('Notification title: ', title);
-  try {
-    const newNotification = await prisma.notification.create({
-      data: {
-        title: title,
-      },
-    });
-    res.json(newNotification);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to create notification" });
-  }
-});
-
-// Get all notifications
-app.get("/notifications", async(req, res) => {
-  try {
-    const notifications = await prisma.notification.findMany();
-    res.json(notifications);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({error: "Failed to get notifications"});
-  }
-})
 
 //! Login System
 app.post("/login", async (req, res) => {
